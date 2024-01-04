@@ -30,7 +30,6 @@ enum class Menu1:int
 	WindowUniformScale = 600,
 	WindowLinearFilter = 601,
 	WindowIntegerScale = 602,
-	AutoUIScale = 603,
 	Prefer3DPBGameData = 700,
 };
 
@@ -109,6 +108,7 @@ public:
 
 	static void InitPrimary();
 	static void InitSecondary();
+	static void InitScaling();
 	static void uninit();
 	static const std::string& GetSetting(const std::string& key, const std::string& defaultValue);
 	static void SetSetting(const std::string& key, const std::string& value);
@@ -125,7 +125,6 @@ public:
 	static bool WaitingForInput() { return ControlWaitingForInput; }
 	static std::vector<GameBindings> MapGameInput(GameInput key);
 	static void ResetAllOptions();
-	static void UpdateUIScale();
 private:
 	static std::unordered_map<std::string, std::string> settings;
 	static bool ShowDialog;
@@ -292,5 +291,4 @@ struct optionsStruct
 	StringOption FontFileName;
 	StringOption Language;
 	BoolOption HideCursor;
-	BoolOption AutoUIScale;
 };

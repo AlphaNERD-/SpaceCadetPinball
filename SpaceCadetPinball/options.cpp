@@ -152,7 +152,6 @@ optionsStruct options::Options
 	{"FontFileName", ""},
 	{"Language", translations::GetCurrentLanguage()->ShortName},
 	{"Hide Cursor", false},
-	{"Automatic UI Scaling", true}
 };
 
 void options::InitPrimary()
@@ -184,6 +183,17 @@ void options::InitSecondary()
 	if (Options.Resolution >= 0 && Options.Resolution > maxRes)
 		Options.Resolution = maxRes;
 	fullscrn::SetResolution(Options.Resolution == -1 ? maxRes : Options.Resolution);
+}
+
+void options::InitScaling()
+{
+	int windowLogicalWidth = 0;
+	int windowPixelWidth = 0;
+	SDL_GetWindowSize(winmain::MainWindow, &windowLogicalWidth, nullptr);
+	SDL_GetWindowSizeInPixels(winmain::MainWindow, &windowPixelWidth, nullptr);
+
+	if (Options.UIScale >= 0)
+		Options.UIScale = static_cast<float>(windowPixelWidth) / windowLogicalWidth;
 }
 
 void options::uninit()
@@ -310,10 +320,6 @@ void options::toggle(Menu1 uIDCheckItem)
 	case Menu1::WindowIntegerScale:
 		Options.IntegerScaling ^= true;
 		fullscrn::window_size_changed();
-		break;
-	case Menu1::AutoUIScale:
-		Options.AutoUIScale ^= true;
-		UpdateUIScale();
 		break;
 	default:
 		break;
@@ -497,8 +503,7 @@ void options::MyUserData_WriteAll(ImGuiContext* ctx, ImGuiSettingsHandler* handl
 
 void options::PostProcessOptions()
 {
-	UpdateUIScale();
-
+	winmain::ImIO->FontGlobalScale = Options.UIScale;
 	Options.FramesPerSecond = Clamp(Options.FramesPerSecond.V, MinFps, MaxFps);
 	Options.UpdatesPerSecond = Clamp(Options.UpdatesPerSecond.V, MinUps, MaxUps);
 	Options.UpdatesPerSecond = std::max(Options.UpdatesPerSecond.V, Options.FramesPerSecond.V);
@@ -507,27 +512,6 @@ void options::PostProcessOptions()
 	Options.MusicVolume = Clamp(Options.MusicVolume.V, MinVolume, MaxVolume);
 	translations::SetCurrentLanguage(Options.Language.V.c_str());
 	winmain::UpdateFrameRate();
-}
-
-void options::UpdateUIScale()
-{
-	float currentUIScale;
-
-	if (Options.AutoUIScale == true)
-	{
-		int windowLogicalWidth = 0;
-		int windowPixelWidth = 0;
-		SDL_GetWindowSize(winmain::MainWindow, &windowLogicalWidth, nullptr);
-		SDL_GetWindowSizeInPixels(winmain::MainWindow, &windowPixelWidth, nullptr);
-
-		currentUIScale = static_cast<float>(windowPixelWidth) / windowLogicalWidth;
-	}
-	else
-	{
-		currentUIScale = Options.UIScale;
-	}
-
-	winmain::ImIO->FontGlobalScale = currentUIScale;
 }
 
 std::string GameInput::GetFullInputDescription() const
