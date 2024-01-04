@@ -185,6 +185,17 @@ void options::InitSecondary()
 	fullscrn::SetResolution(Options.Resolution == -1 ? maxRes : Options.Resolution);
 }
 
+void options::InitScaling()
+{
+	int windowLogicalWidth = 0;
+	int windowPixelWidth = 0;
+	SDL_GetWindowSize(winmain::MainWindow, &windowLogicalWidth, nullptr);
+	SDL_GetWindowSizeInPixels(winmain::MainWindow, &windowPixelWidth, nullptr);
+
+	if (Options.UIScale >= 0)
+		Options.UIScale = static_cast<float>(windowPixelWidth) / windowLogicalWidth;
+}
+
 void options::uninit()
 {
 	Options.Language.V = translations::GetCurrentLanguage()->ShortName;
@@ -193,8 +204,6 @@ void options::uninit()
 		opt->Save();
 	}
 }
-
-
 int options::get_int(LPCSTR lpValueName, int defaultValue)
 {
 	auto value = GetSetting(lpValueName, std::to_string(defaultValue));
