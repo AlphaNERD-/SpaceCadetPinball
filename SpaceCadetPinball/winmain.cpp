@@ -240,7 +240,7 @@ int winmain::WinMain(LPCSTR lpCmdLine)
 
 		SDL_ShowWindow(window);
 
-		options::InitScaling();
+		
 
 		fullscrn::set_screen_mode(Options.FullScreen);
 
@@ -602,10 +602,14 @@ void winmain::RenderUi()
 				{
 					options::toggle(Menu1::WindowIntegerScale);
 				}
-				if (ImGui::DragFloat("UI Scale", &Options.UIScale.V, 0.005f, 0.8f, 5,
+				if (ImGui::MenuItem("Automatic UI Scale", nullptr, Options.AutoUIScale))
+				{
+					options::toggle(Menu1::AutoUIScale);
+				}
+				if (Options.AutoUIScale == false && ImGui::DragFloat("UI Scale", &Options.UIScale.V, 0.005f, 0.8f, 5,
 				                     "%.2f", ImGuiSliderFlags_AlwaysClamp))
 				{
-					ImIO->FontGlobalScale = Options.UIScale;
+					options::UpdateUIScale();
 				}
 				ImGui::Separator();
 
