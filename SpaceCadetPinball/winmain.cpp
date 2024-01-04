@@ -237,11 +237,7 @@ int winmain::WinMain(LPCSTR lpCmdLine)
 			auto resInfo = &fullscrn::resolution_array[fullscrn::GetResolution()];
 			SDL_SetWindowSize(MainWindow, resInfo->TableWidth, resInfo->TableHeight);
 		}
-
 		SDL_ShowWindow(window);
-
-		options::InitScaling();
-
 		fullscrn::set_screen_mode(Options.FullScreen);
 
 		if (strstr(lpCmdLine, "-demo"))

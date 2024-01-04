@@ -108,7 +108,6 @@ public:
 
 	static void InitPrimary();
 	static void InitSecondary();
-	static void InitScaling();
 	static void uninit();
 	static const std::string& GetSetting(const std::string& key, const std::string& defaultValue);
 	static void SetSetting(const std::string& key, const std::string& value);
@@ -197,7 +196,6 @@ struct FloatOption : OptionBaseT<float>
 
 	void Load() override { V = options::get_float(Name, DefaultValue); }
 	void Save() const override { options::set_float(Name, V); }
-	using OptionBaseT::operator=;
 };
 
 struct BoolOption : OptionBaseT<bool>
